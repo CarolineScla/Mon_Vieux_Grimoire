@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Book = require('./models/Book');
 
@@ -20,9 +21,23 @@ app.use((req, res, next) => {
     next();
   });
 
+app.use(bodyParser.json());
 
+app.post('/api/stuff', (req, res, next) => {
+    delete req.body._id;
+    const Book = new Book({
+      ...req.body  //pour faire une copie de tous les éléments de req.body
+    });
+    Book.save()
+      .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+      .catch(error => res.status(400).json({ error }));
+  });
 
-// routes a ajouter 
+  app.use('/api/stuff', (req, res, next) => {
+    Book.find()
+      .then(Books => res.status(200).json(Books))
+      .catch(error => res.status(400).json({ error }));
+  });
   
 
 module.exports = app;
