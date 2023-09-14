@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const books = require('./routes/books');
-//const auth = require('./routes/user');
-const user = require("./controllers/User");
+const booksRoutes = require('./routes/books');
+const userRoutes = require('./routes/user');
 const path = require('path');
 
 app.use(express.json()); 
+
 // Activer CORS avec le middleware cors
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,9 +24,9 @@ mongoose.connect('mongodb+srv://newuser:MongoDB@cluster0.v4ebrt9.mongodb.net/?re
 
 
   // Ajout des routes pour livres, authentification utilisateur et images statiques
-  app.use('/api/books', books)
-  app.use('/api/auth', user)
   app.use('/images', express.static(path.join(__dirname, 'images')));
-  
+  app.use('/api/books', booksRoutes);
+  app.use('/api/auth', userRoutes);
+
 
 module.exports = app;

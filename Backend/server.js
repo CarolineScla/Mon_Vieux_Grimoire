@@ -35,6 +35,7 @@ const errorHandler = error => {
   }
 };
 
+// Creation of the application server
 const server = http.createServer(app);
 
 server.on('error', errorHandler);
@@ -45,4 +46,3 @@ server.on('listening', () => {
 });
 
 server.listen(port);
-

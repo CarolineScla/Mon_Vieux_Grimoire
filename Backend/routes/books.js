@@ -1,24 +1,19 @@
 // Opérations CRUD (Create, Read, Update, Delete)
-const express = require('express')
-const router = express.Router()
-const bookCont = require('../controllers/book')
+const express = require('express');
+const router = express.Router();
+
 const auth = require('../middlewares/auth');
 const multer = require('../middlewares/multer');
 
-router.route('/')
-  .get(bookCont.getAllBooks)
-  .post(auth, multer, bookCont.createBook);
+const booksCtrl = require('../controllers/book');
+router.post('/', auth, multer, booksCtrl.createBook);
+router.get('/bestrating', booksCtrl.bestRatingBook);
+router.get('/', booksCtrl.getAllBooks);
 
-router.get('/bestrating', bookCont.bestRatedBooks)
-
-router.route('/:id')
-      .get(bookCont.getOneBook)
-      .put(auth, multer, bookCont.updateOneBook)
-      .delete(auth, bookCont.deleteOneBook)
-
- 
-router.post('/:id/rating', auth, bookCont.updateRatings);
+router.get('/:id', booksCtrl.getOneBook);
+router.put('/:id', auth, multer, booksCtrl.modifyBook);
+router.delete('/:id', auth, booksCtrl.deleteBook);
+router.post('/:id/rating', auth, booksCtrl.addRating);
 
 
-
-module.exports = router
+module.exports = router;
