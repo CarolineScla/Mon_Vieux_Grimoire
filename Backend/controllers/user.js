@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // Fonction de gestion de l'inscription
 exports.signup = (req, res, next) => {
     // Hachage du mot de passe reçu dans la requête (req.body.password)
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 10) // Nombre d'itérations que la fonction de hachage bcrypt effectue
         .then(hash => {
             // Création d'un nouvel utilisateur avec l'email et le mot de passe haché
             const user = new User({
