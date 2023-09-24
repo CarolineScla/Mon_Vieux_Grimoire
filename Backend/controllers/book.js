@@ -3,6 +3,13 @@ const fs = require('fs'); // Module pour la gestion des fichiers
 
 // Fonction pour créer un nouveau livre (POST)
 exports.createBook = (req, res, next) => {
+  if (!req.file) {
+    res.status(400).json({
+      field: 'image',
+      reason: 'image is required'
+    })
+    return
+  }
   const bookObject = JSON.parse(req.body.book);  // Analyser le corps de la requête pour obtenir les données du livre.
   delete bookObject._id;  // Supprimer les champs inutiles (_id et _userId) des données du livre.
   delete bookObject._userId;
@@ -28,14 +35,14 @@ exports.createBook = (req, res, next) => {
 exports.getOneBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then(book => res.status(200).json(book))
-    .catch(error => res.status(404).json({ error: error }));
+    .catch(error => res.status(404).json({ error }));
 };
 
 // Fonction pour obtenir tous les livres (GET)
 exports.getAllBooks = (req, res, next) => {
   Book.find()
     .then(books => res.status(200).json(books))
-    .catch(error => res.status(400).json({ error: error }));
+    .catch(error => res.status(400).json({ error }));
 };
 
 // Fonction pour mettre à jour un livre par son ID (PUT)
@@ -47,6 +54,14 @@ exports.modifyBook = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
       }
     : { ...req.body };
+
+  if (bookObject.title === '') {
+    return res.status(400).json({
+      field: 'title',
+      reason: 'title must not be empty'
+    })
+  }
+
   // Rechercher le livre par son ID
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -81,8 +96,8 @@ exports.modifyBook = (req, res, next) => {
       }
     })
     .catch((error) => {
-      // En cas d'erreur lors de la recherche du livre par son ID, renvoyer une réponse avec l'erreur correspondante (status 400)
-      res.status(400).json({ error });
+      // En cas d'erreur lors de la recherche du livre par son ID, renvoyer une réponse avec l'erreur correspondante (status 404)
+      res.status(404).json({ error });
     });
 };
 
@@ -130,7 +145,7 @@ exports.bestRatingBook = (req, res, next) => {
     }
   )
     .catch(error => {
-      res.status(400).json({ error: error });
+      res.status(400).json({ error });
     });
 };
 
