@@ -26,5 +26,12 @@ const storage = multer.diskStorage({
   }
 });
 
+// Configuration de Multer pour limiter la taille des fichiers téléchargés
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5242880 } // Limite de 5 Mo (5242880 octets)
+});
+
+
 // Exporter un middleware Multer configuré pour traiter un seul fichier avec le champ 'image'
 module.exports = multer({ storage: storage }).single('image');
